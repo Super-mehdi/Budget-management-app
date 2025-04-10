@@ -153,7 +153,7 @@ def register():
             email=form.email.data,
             password=hashed_password,
             country=form.country.data,
-            city=form.city.data
+            city=form.city.data,
             income=form.income.data,
             currencyPreference=form.currencyPreference.data
         )
