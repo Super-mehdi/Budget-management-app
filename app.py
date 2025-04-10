@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 #users' registration route
-from flask import render_template, redirect, url_for, flash,session
+from flask import render_template, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegistrationForm
 
@@ -154,23 +154,14 @@ def register():
             password=hashed_password,
             country=form.country.data,
             city=form.city.data
+            income=form.income.data,
+            currencyPreference=form.currencyPreference.data
         )
-        return redirect(url_for('signup1'))
-    return render_template("signup.html", form=form)
-
-
-
-"""@app.route("/signup", methods=["GET", "POST"])
-def register():
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        hashed_password = generate_password_hash(form.password.data)
-        new_user = User(username=form.username.data, password=hashed_password)
         db.session.add(new_user)
         db.session.commit()
         flash("Registration successful! Please log in.", "success")
         return redirect(url_for("login"))
-    return render_template("signup.html", form=form)"""
+    return render_template("signup.html", form=form)
 
 
 #from flask_login import login_required

@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms.validators import DataRequired, Length, Email, EqualTo,InputRequired
+from wtforms import IntegerField
 
 class RegistrationForm(FlaskForm):
     name = StringField("Full Name", validators=[DataRequired()])
@@ -11,11 +11,9 @@ class RegistrationForm(FlaskForm):
     confirm_password = PasswordField("Confirm Password", validators=[DataRequired(), EqualTo('password')])
     country = StringField("Country")
     city = StringField("City")
-    submit = SubmitField("Register")
-class RegistrationForm1(FlaskForm):
-    username = StringField("Username", validators=[DataRequired(), Length(min=4, max=20)])
-    password = PasswordField("Password", validators=[DataRequired(), Length(min=6, max=20)])
-    submit = SubmitField("Register")
+    currencyPreference=StringField("currencyPreference")
+    income=IntegerField("Monthly Income",validators=[InputRequired()], render_kw={"placeholder": "Enter whole numbers only"})
+
 
 class LoginForm(FlaskForm):
     login = StringField("Login", validators=[DataRequired()])  # Changed from username to login
