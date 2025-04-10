@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="/static/signup-page-style.css" rel="stylesheet">
+        <title>sign up</title>
+    </head>
+    <body>
+        <h1 style="color: aliceblue;">Sign up</h1><br>
+        <div class="Signup-block">
+            <form class="Register" action="/signup" method="POST">
+                {{ form.hidden_tag() }}
+                <h1>Personal information</h1>
+                <table>
+                    <tr>
+                        <td>{{ form.name.label }}</td>
+                        <td>{{ form.name(placeholder="Full name") }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.login.label }}</td>
+                        <td>{{ form.login(placeholder="Username") }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.email.label }}</td>
+                        <td>{{ form.email(placeholder="E-mail") }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.password.label }}</td>
+                        <td>{{ form.password(placeholder="Password") }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.confirm_password.label }}</td>
+                        <td>{{ form.confirm_password(placeholder="Confirm password") }}</td>
+                    </tr>
+                    <tr>
+                        <td>Country</td>
+                        <td>
+                            <select class="country" name="country" onchange="loadCities()" style="width: 185px;">
+                                <option value="" selected>Select country</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>City</td>
+                        <td>
+                            <select class="city" name="city" style="width: 185px;">
+                                <option value="" selected>Select city</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+                <div class="button-container">
+                    <button class="back" onclick="window.location.href='{{ url_for('login') }}'">Back</button>
+                    {{ form.submit(class="next") }}
+                </div>
+            </form>
+        </div>
+        <script src="/static/app0.js"></script>
+    </body>
+    <!--<body>
+        <h1 style="color: aliceblue;">Sign up</h1><br>
+        <div class="Signup-block">
+       <form class="Register" action="/signup" method="POST" >
+        <h1>Personal information</h1>
+        <table>
+        <tr>
+        <p><td> full name  </td><td> <input type="text" name="name" placeholder="Full name" required></td></p>
+        </tr>
+        <tr>
+        <p><td>Choose a username (this is your future login) </td><td><input type="text" name="login" placeholder="Username" required></td></p>
+        </tr>
+        <tr>
+            <p><td>E-mail</td><td> <input type="text" placeholder="E-mail" required></td></p>
+            </tr>
+        <tr>
+        <p><td>Password </td><td><input type="text" placeholder="Password" required></td></p>
+        </tr>
+        <tr>
+        <p><td>Confirm password</td><td> <input type="text" placeholder="Confirm password" required></td></p>
+        </tr>
+        <tr>
+        <p><td>Country</td>
+        <td>
+        <select class="country" onchange="loadCities()" style="width: 185px;">
+            <option selected>Select country</option>
+        </select>
+        </td>
+        </p>
+        </tr>
+        <tr>
+        <p><td>City </td>
+        <td>
+        <select class="city" style="width: 185px;">
+            <option selected>Select city</option>
+        </select>
+        </td>
+        </p>
+        </tr>
+        </table>
+        <br>
+        </form>
+        <div class="button-container">
+        <button class="back" onclick="window.location.href='{{ url_for('login') }}'">Back</button>
+        <button class="next" onclick="location.href='signup1.html'">Next</button>
+        </div>
+        </div>
+        <script src="/static/app0.js"></script>
+    </body>-->
+</html>
