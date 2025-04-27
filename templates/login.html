@@ -9,6 +9,9 @@
         <title>Login to your Ur FSA account</title>
     </head>
     <body>
+        <div class="pig">
+            <img src="{{ url_for('static', filename='Assets/piggy_bank.png') }}" alt="Piggy bank image" class="pig">
+        </div>
         <div class="Login-block">
             <form action="/login" method="POST">
                 {{ form.hidden_tag() }}  <!-- Add this line for CSRF protection -->

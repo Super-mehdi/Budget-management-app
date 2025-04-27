@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 #users' registration route
@@ -12,6 +12,9 @@ from flask_login import login_user
 from flask_login import login_required
 
 from flask_login import logout_user
+from apptst import scrape_jumia
+
+import requests
 
 #Configuration
 app = Flask(__name__)
@@ -171,8 +174,23 @@ def register():
 def dashboard():
     return render_template("dashboard.html")
 
+@app.route('/search', methods=['POST'])
+def search():
+    query = request.form['query'].replace(' ', '+')
 
-#from flask_login import logout_user
+    jumia = scrape_jumia(query)
+
+    # Construction HTML
+    html = "<h2>Résultats Jumia :</h2><ul>"
+    for r in jumia:
+        html += f"<li>{r}</li>"
+    html += "</ul>"
+    return html
+
+@app.route("/market")
+def market():
+    return render_template('market.html')
+
 
 @app.route("/logout")
 @login_required

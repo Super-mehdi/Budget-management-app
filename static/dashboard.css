@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
+* {
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+    font-family: "Inter","sans-serif","Times New Roman", Times, serif;
+}
+body, html {
+    height:100%;
+    background-color: black;
+}
+body {
+    display: grid;
+    grid-template-columns: 20% 70%;
+}
+.control_panel {
+    background-color: white;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: larger;
+}
+.control_panel .Market {
+    margin: 25% auto;
+}
+.control_panel .logout {
+    margin-top: auto;
+    margin-bottom: 20px;
+}
+.control_panel .logout_img {
+    width: 30px;
+    height: 30px;
+    transform: rotate(180deg);
+}
+.control_panel .Home {
+    margin-top: 90%;
+}
+.homepage {
+    position: relative;
+
+}
+.homepage .Welcome {
+    margin-top: 15%;
+    width: 825px;
+    height: 250px;
+    border-radius: 15px;
+    background-color: #F7EEEE;
+    position: absolute;
+    margin-right: 15%;
+    margin-left: 15%;
+    display: grid;
+    grid-template-columns: 70% 30%;
+}
+.homepage .Welcome .money .money_img {
+    width:249px;
+    height: 168px;
+    margin-right: 50px;
+    margin-top: 30px;
+    transform: rotate(45deg);
+    
+}
+.homepage .Welcome .blabla {
+    margin-left: 10%;
+    margin-top: 10%;
+}
+.hello {
+    font-weight:bold;
+    font-size:  55px;
+    color:#666666 ;
+}
+.homepage .Welcome .blabla p {
+    color:#666666 ;
+    font-weight: lighter;
+    margin-top: 8px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.control_panel a:hover{
+        color: green;
+        font-weight:900;
+      }
+       
+.control_panel a {
+    color: inherit;         
+    text-decoration: none;  
+    cursor: pointer;
+}
+a.active {
+    color: green;
+    font-weight:1000 ;
+  }
+  

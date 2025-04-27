@@ -7,11 +7,13 @@
         <title>sign up</title>
     </head>
     <body>
-        <h1 style="color: aliceblue;">Sign up</h1><br>
+        <div class="pig">
+            <img src="{{ url_for('static', filename='Assets/piggy_bank.png') }}" alt="Piggy bank image" class="pig">
+        </div>
         <div class="Signup-block">
+            <h1>Sign up</h1>
             <form class="Register" action="/signup" method="POST">
                 {{ form.hidden_tag() }}
-                <h1>Personal information</h1>
                 <table>
                     <tr>
                         <td>{{ form.name.label }}</td>
@@ -51,7 +53,6 @@
                     </tr>
                     
                     <!-- Income Section -->
-                    <tr style="text-align: center;"><td colspan="2"><h1>Income (optional)</h1></td></tr>
                     <tr>
                         <td>{{ form.income.label }}</td>
                         <td>
@@ -73,7 +74,7 @@
                         </td>
                     </tr>
                 </table>
-                
+    
                 <br>
                 <div class="button-container">
                     <button class="back" onclick="window.location.href='{{ url_for('login') }}'">Back</button>
