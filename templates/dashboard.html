@@ -9,7 +9,8 @@
         <a href="/dashboard" class="Home">Home</a>
         <!--<a class="Home" href="{{ url_for('dashboard') }}">Home</a>--><br>
         <a class="Market" href="{{ url_for('market') }}">Market</a><br>
-        <a class="history" href="#">My history</a><br>
+        <a class="history" href="{{ url_for('history') }}">My history</a><br>
+        <a class="expenses" href="{{ url_for('expenses') }}" >My expenses</a><br>
         <a href="{{ url_for('logout') }}" class="logout"><img src="/static/Assets/log-out_15093126.png" class="logout_img"></a>
     </div>
     <div class="homepage">

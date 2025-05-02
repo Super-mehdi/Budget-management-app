@@ -1,30 +1,24 @@
 from flask import Flask,request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-#users' registration route
 from flask import render_template, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegistrationForm
+import sqlite3
 
 from forms import LoginForm
-from flask_login import login_user
+from flask_login import login_user, login_required, logout_user, current_user
 
-from flask_login import login_required
-
-from flask_login import logout_user
 from apptst import scrape_jumia
 
 import requests
-
-#Configuration
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///Users.db"
 app.config["SECRET_KEY"] = "0000" 
 
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
-login_manager.login_view = "login" 
-#Database definition
+login_manager.login_view = "login"
 from flask_login import UserMixin
 from datetime import datetime
 
@@ -198,6 +192,47 @@ def logout():
     logout_user()
     flash("You have been logged out.", "info")
     return redirect(url_for("login"))
+
+def get_db_connection():
+    conn = sqlite3.connect('Users.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
+@app.route('/history')
+def history():
+    conn = get_db_connection()
+    achats = conn.execute('SELECT * FROM purchase').fetchall()
+    conn.close()
+    return render_template('hist.html', achats=achats)
+
+@app.route('/expenses', methods=['GET', 'POST'])
+@login_required
+def expenses():
+    if request.method == 'POST':
+        productName = request.form['productName']
+        quantity = int(request.form['quantity'])
+        pricePerUnit = float(request.form['pricePerUnit'])
+        dateOfPurchase = request.form['dateOfPurchase']
+        vendor = request.form['vendor']
+        user_id = current_user.id
+
+        conn = sqlite3.connect('Users.db')
+        cursor = conn.cursor()
+
+        cursor.execute('''
+            INSERT INTO purchase (productName, quantity, pricePerUnit, dateOfPurchase, vendor, user_id, product_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (productName, quantity, pricePerUnit, dateOfPurchase, vendor, user_id, 1))
+
+        conn.commit()
+        conn.close()
+
+        flash('Achat enregistré avec succès!', 'success')
+        return redirect(url_for('expenses'))
+
+    return render_template('expenses.html')
+
+
 
 @login_manager.user_loader
 def load_user(user_id):

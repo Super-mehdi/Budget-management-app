@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Historique des Achats</title>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .control_panel {
+            width: 200px;
+            background: white;
+            color: black;
+            padding: 20px;
+            height: 100vh;
+            float: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .control_panel a {
+            text-decoration: none;
+            color: black;
+            margin: 10px 0;
+        }
+        .control_panel a:hover {
+            color: green;
+        }
+        .content_container {
+            margin-left: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .content_box {
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 20px;
+            width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        form button {
+            background: black;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        form button:hover {
+            background: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="control_panel">
+        <a href="{{ url_for('dashboard') }}">Home</a>
+        <a href="{{ url_for('market') }}">Market</a>
+        <a href="{{ url_for('history') }}" style="color: green;">My history</a>
+        <a href="{{ url_for('expenses') }}">Expenses</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <div class="content_container">
+        <div class="content_box">
+            <h2>Historique des Achats</h2>
+            <table>
+                <tr>
+                    <th>Produit</th>
+                    <th>Quantité</th>
+                    <th>Prix Unitaire</th>
+                    <th>Date</th>
+                    <th>Vendeur</th>
+                </tr>
+                {% for achat in achats %}
+                <tr>
+                    <td>{{ achat['productName'] }}</td>
+                    <td>{{ achat['quantity'] }}</td>
+                    <td>{{ achat['pricePerUnit'] }}</td>
+                    <td>{{ achat['dateOfPurchase'] }}</td>
+                    <td>{{ achat['vendor'] }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">Aucun achat enregistré.</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+            <form action="{{ url_for('dashboard') }}">
+                <button type="submit">← Retour au dashboard</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

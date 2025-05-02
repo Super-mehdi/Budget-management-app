@@ -23,6 +23,9 @@ body {
     justify-content: center;
     font-size: larger;
 }
+.control_panel .expenses {
+    margin: 25% auto;
+}
 .control_panel .Market {
     margin: 25% auto;
 }

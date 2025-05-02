@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un achat</title>
+    <style>
+        body {
+            background-color: #000;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .control_panel {
+            width: 200px;
+            background: white;
+            color: black;
+            padding: 20px;
+            height: 100vh;
+            float: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .control_panel a {
+            text-decoration: none;
+            color: black;
+            margin: 10px 0;
+        }
+        .control_panel a:hover {
+            color: green;
+        }
+        .form_container {
+            margin-left: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .form_box {
+            background: white;
+            color: black;
+            padding: 30px;
+            border-radius: 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        .form_box input, .form_box button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        .form_box button {
+            background: black;
+            color: white;
+            cursor: pointer;
+        }
+        .form_box button:hover {
+            background: green;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="control_panel">
+        <a href="{{ url_for('dashboard') }}">Home</a>
+        <a href="{{ url_for('market') }}">Market</a>
+        <a href="{{ url_for('history') }}">My history</a>
+        <a href="{{ url_for('expenses') }}" style="color: green;">Expenses</a>
+        <a href="{{ url_for('logout') }}">Logout</a>
+    </div>
+
+    <div class="form_container">
+        <div class="form_box">
+            <h2>Ajouter un achat</h2>
+            <form method="POST">
+                <input type="text" name="productName" placeholder="Nom du produit" required>
+                <input type="number" name="quantity" placeholder="Quantité" required>
+                <input type="number" step="0.01" name="pricePerUnit" placeholder="Prix unitaire" required>
+                <input type="date" name="dateOfPurchase" required>
+                <input type="text" name="vendor" placeholder="Vendeur" required>
+                <button type="submit">Enregistrer l'achat</button>
+            </form>
+            <br>
+            <a href="{{ url_for('dashboard') }}" style="color: green;">← Retour au dashboard</a>
+        </div>
+    </div>
+
+</body>
+</html>
