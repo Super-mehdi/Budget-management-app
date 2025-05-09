@@ -80,18 +80,38 @@
         <a class="expenses" href="{{ url_for('expenses') }}" >My expenses</a><br>
         <a href="{{ url_for('logout') }}" class="logout"><img src="/static/Assets/log-out_15093126.png" class="logout_img"></a>
     </div>
-    <div class="homepage">
-        <div class="Welcome">
+    <div class="homepage" style="display: flex; justify-content: space-between; align-items: center; gap: 40px; margin: 40px;">
+        <div class="left-column" style="background: #f9f0f0; padding: 20px; border-radius: 15px; display: flex; align-items: center; gap: 20px; flex: 1;">
             <div class="blabla">
-                <h1 class="hello">Hello, El mehdi</h1>
+                <h1 class="hello">Hello, costumer!</h1>
                 <p><i>“A wise person should have money in their head, but not in their heart.”</i><br>
                     Jonathan Swift</p>
             </div>
             <div class="money">
-                <img src="/static/Assets/Hands - Cash.png" class="money_img">
+                <img src="/static/Assets/Hands - Cash.png" class="money_img" style="max-width: 120px;">
             </div>
         </div>
+
+        <!-- Colonne droite : budget -->
+        <div class="right-column" style="background: white; color: black; padding: 20px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 0 10px rgba(255,255,255,0.3);">
+            <h3>Budget</h3>
+            <div style="position: relative; width: 150px; height: 150px; margin: 0 auto;">
+                <svg width="150" height="150">
+                    <circle cx="75" cy="75" r="60" stroke="#eee" stroke-width="15" fill="none" />
+                    <circle cx="75" cy="75" r="60" stroke="green" stroke-width="15" fill="none"
+                            stroke-dasharray="{{ percent_used * 3.77 }}, 999"
+                            transform="rotate(-90 75 75)" />
+                </svg>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                    <strong>{{ real_percent_used | round(1) }}%</strong>
+                </div>
+            </div>
+            <p>Dépensé : <strong>{{ total_spent | round(2) }} Dhs</strong></p>
+            <p>Restant : <strong>{{ remaining | round(2) }} Dhs</strong></p>
+            <p>Budget total : <strong>{{ user_income }} Dhs</strong></p>
+        </div>
     </div>
+
     <script>
         const currentURL = window.location.pathname;
         document.querySelectorAll('a').forEach(link => {
@@ -116,6 +136,7 @@
             }
         }
     </script>
+
 </body>
 </html>
 <!--<form action="/search" method="POST">

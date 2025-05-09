@@ -75,6 +75,14 @@
     <div class="form_container">
         <div class="form_box">
             <h2>Ajouter un achat</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
             <form method="POST">
                 <input type="text" name="productName" placeholder="Nom du produit" required>
                 <input type="number" name="quantity" placeholder="Quantité" required>
@@ -87,6 +95,12 @@
             <a href="{{ url_for('dashboard') }}" style="color: green;">← Retour au dashboard</a>
         </div>
     </div>
+
+    <form action="{{ url_for('reset_expenses') }}" method="post" onsubmit="return confirm('Voulez-vous vraiment réinitialiser vos dépenses ?');">
+        <button type="submit" style="background: red; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 15px;">
+            Réinitialiser mes dépenses
+        </button>
+    </form>
 
 </body>
 </html>

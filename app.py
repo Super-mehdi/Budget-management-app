@@ -5,6 +5,7 @@ from flask import render_template, redirect, url_for, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegistrationForm
 import sqlite3
+from datetime import datetime
 
 from forms import LoginForm
 from flask_login import login_user, login_required, logout_user, current_user
@@ -166,7 +167,33 @@ def register():
 @app.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html")
+    user_income = current_user.income
+    if user_income is None:
+        user_income = 0
+
+    # Calculer dépenses totales
+    total_spent = 0
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+           SELECT SUM(quantity * pricePerUnit) FROM purchase WHERE user_id = ?
+       ''', (current_user.id,))
+    result = cursor.fetchone()
+    if result and result[0]:
+        total_spent = result[0]
+    conn.close()
+
+    # Calculer restant et pourcentage
+    remaining = user_income - total_spent
+    percent_used = (total_spent / user_income) * 100 if user_income > 0 else 0
+    percent_display = min(percent_used, 100)  # on limite visuellement à 100%
+
+    return render_template("dashboard.html",
+                           user_income=user_income,
+                           total_spent=total_spent,
+                           remaining=remaining,
+                           percent_used=percent_display,
+                           real_percent_used=percent_used)
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -200,10 +227,33 @@ def get_db_connection():
 
 @app.route('/history')
 def history():
+    now = datetime.now()
+    current_month = now.month
+    current_year = now.year
+
     conn = get_db_connection()
-    achats = conn.execute('SELECT * FROM purchase').fetchall()
+    achats = conn.execute('''
+        SELECT * FROM purchase
+        WHERE user_id = ?
+        AND strftime('%m', dateOfPurchase) = ?
+        AND strftime('%Y', dateOfPurchase) = ?
+    ''', (current_user.id, f'{current_month:02d}', str(current_year))).fetchall()
     conn.close()
+
     return render_template('hist.html', achats=achats)
+
+
+@app.route('/reset_expenses', methods=['POST'])
+def reset_expenses():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM purchase WHERE user_id = ?', (current_user.id,))
+    conn.commit()
+    conn.close()
+
+    flash('Vos dépenses ont été réinitialisées avec succès.', 'success')
+    return redirect(url_for('history'))
+
 
 @app.route('/expenses', methods=['GET', 'POST'])
 @login_required
