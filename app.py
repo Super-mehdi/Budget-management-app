@@ -171,29 +171,37 @@ def dashboard():
     if user_income is None:
         user_income = 0
 
-    # Calculer dépenses totales
+    # Calculer les dépenses totales
     total_spent = 0
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('''
-           SELECT SUM(quantity * pricePerUnit) FROM purchase WHERE user_id = ?
-       ''', (current_user.id,))
+        SELECT SUM(quantity * pricePerUnit) FROM purchase WHERE user_id = ?
+    ''', (current_user.id,))
     result = cursor.fetchone()
     if result and result[0]:
         total_spent = result[0]
-    conn.close()
 
-    # Calculer restant et pourcentage
     remaining = user_income - total_spent
     percent_used = (total_spent / user_income) * 100 if user_income > 0 else 0
-    percent_display = min(percent_used, 100)  # on limite visuellement à 100%
+    percent_display = min(percent_used, 100)
+
+    # 🔁 Récupérer tous les objectifs de l’utilisateur
+    cursor.execute('''
+        SELECT * FROM goal WHERE user_id = ? ORDER BY goalId DESC
+    ''', (current_user.id,))
+    goals = cursor.fetchall()
+
+    conn.close()
 
     return render_template("dashboard.html",
                            user_income=user_income,
                            total_spent=total_spent,
                            remaining=remaining,
                            percent_used=percent_display,
-                           real_percent_used=percent_used)
+                           real_percent_used=percent_used,
+                           goals=goals)
+
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -242,6 +250,57 @@ def history():
 
     return render_template('hist.html', achats=achats)
 
+@app.route("/add-goal", methods=["GET"])
+@login_required
+def add_goal():
+    # Liste prédéfinie de produits disponibles
+    products = [
+        {"name": "ps5", "price": 6000},
+        {"name": "iphone15", "price": 10000},
+        {"name": "xboxseriesx", "price": 6000},
+        {"name": "airpods", "price": 500},
+        {"name": "velo", "price": 1500},
+    ]
+    return render_template("add_goal.html", products=products)
+
+@app.route("/add-goal", methods=["POST"])
+@login_required
+def save_goal():
+    from datetime import datetime
+
+    product = request.form.get("product")
+    startedAt = datetime.today().strftime('%Y-%m-%d')
+
+    product_prices = {
+        "ps5": 6000,
+        "iphone15": 10000,
+        "xboxseriesx": 6000,
+        "airpods": 500,
+        "velo": 1500
+    }
+
+    outcome = product_prices.get(product)
+
+    if outcome is None:
+        flash("Produit inconnu ou invalide", "error")
+        return redirect(url_for("add_goal"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # cursor.execute('DELETE FROM goal WHERE user_id = ?', (current_user.id,))
+
+    # Ajouter un nouvel objectif en plus des autres
+    cursor.execute('''
+        INSERT INTO goal (goalNature, startedAt, endedAt, outcome, user_id)
+        VALUES (?, ?, NULL, ?, ?)
+    ''', (product, startedAt, outcome, current_user.id))
+    conn.commit()
+    conn.close()
+
+    flash("Objectif ajouté avec succès !", "success")
+    return redirect(url_for("dashboard"))
+
 
 @app.route('/reset_expenses', methods=['POST'])
 def reset_expenses():
@@ -282,6 +341,17 @@ def expenses():
 
     return render_template('expenses.html')
 
+@app.route("/delete-goal/<int:goal_id>", methods=["POST"])
+@login_required
+def delete_specific_goal(goal_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM goal WHERE goalId = ? AND user_id = ?', (goal_id, current_user.id))
+    conn.commit()
+    conn.close()
+
+    flash("Objectif supprimé.", "info")
+    return redirect(url_for("dashboard"))
 
 
 @login_manager.user_loader

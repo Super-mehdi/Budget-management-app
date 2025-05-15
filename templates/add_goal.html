@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un objectif</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f0f0; padding: 50px; text-align: center; }
+        form { background: white; padding: 30px; border-radius: 10px; display: inline-block; }
+        select, button { padding: 10px; margin: 10px 0; width: 100%; }
+    </style>
+</head>
+<body>
+    <h2>Choisir un objectif produit</h2>
+    <form method="POST" action="/add-goal">
+        <label for="product">Produit :</label><br>
+        <select name="product" required>
+            {% for p in products %}
+            <option value="{{ p.name }}">{{ p.name.capitalize() }} ({{ p.price }} Dhs)</option>
+            {% endfor %}
+        </select><br>
+
+        <label for="outcome">Montant objectif (Dhs) :</label><br>
+        <input type="number" name="outcome" required><br>
+
+        <button type="submit">Enregistrer</button>
+    </form>
+</body>
+</html>

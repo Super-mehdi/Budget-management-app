@@ -54,8 +54,8 @@
             cursor: pointer;
         }
     </style>
-
 </head>
+
 <body>
     <div class="top_right">
         <button onclick="openModal()" title="User Info">👤</button>
@@ -73,14 +73,15 @@
     </div>
 
     <div class="control_panel">
-        <a href="/dashboard" class="Home">Home</a>
-        <!--<a class="Home" href="{{ url_for('dashboard') }}">Home</a>--><br>
+        <a href="/dashboard" class="Home">Home</a><br>
         <a class="Market" href="{{ url_for('market') }}">Market</a><br>
         <a class="history" href="{{ url_for('history') }}">My history</a><br>
         <a class="expenses" href="{{ url_for('expenses') }}" >My expenses</a><br>
         <a href="{{ url_for('logout') }}" class="logout"><img src="/static/Assets/log-out_15093126.png" class="logout_img"></a>
     </div>
+
     <div class="homepage" style="display: flex; justify-content: space-between; align-items: center; gap: 40px; margin: 40px;">
+        <!-- Bloc texte et image de gauche -->
         <div class="left-column" style="background: #f9f0f0; padding: 20px; border-radius: 15px; display: flex; align-items: center; gap: 20px; flex: 1;">
             <div class="blabla">
                 <h1 class="hello">Hello, costumer!</h1>
@@ -92,35 +93,84 @@
             </div>
         </div>
 
-        <!-- Colonne droite : budget -->
-        <div class="right-column" style="background: white; color: black; padding: 20px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 0 10px rgba(255,255,255,0.3);">
-            <h3>Budget</h3>
-            <div style="position: relative; width: 150px; height: 150px; margin: 0 auto;">
-                <svg width="150" height="150">
-                    <circle cx="75" cy="75" r="60" stroke="#eee" stroke-width="15" fill="none" />
-                    <circle cx="75" cy="75" r="60" stroke="green" stroke-width="15" fill="none"
-                            stroke-dasharray="{{ percent_used * 3.77 }}, 999"
-                            transform="rotate(-90 75 75)" />
-                </svg>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                    <strong>{{ real_percent_used | round(1) }}%</strong>
+        <!-- Bloc Budget + Goal -->
+        <div style="display: flex; gap: 40px;">
+            <!-- Budget -->
+            <div style="background: white; color: black; padding: 20px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 0 10px rgba(255,255,255,0.3);">
+                <h3>Budget</h3>
+                <div style="position: relative; width: 150px; height: 150px; margin: 0 auto;">
+                    <svg width="150" height="150">
+                        <circle cx="75" cy="75" r="60" stroke="#eee" stroke-width="15" fill="none" />
+                        <circle cx="75" cy="75" r="60" stroke="green" stroke-width="15" fill="none"
+                                stroke-dasharray="{{ percent_used * 3.77 }}, 999"
+                                transform="rotate(-90 75 75)" />
+                    </svg>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                        <strong>{{ real_percent_used | round(1) }}%</strong>
+                    </div>
                 </div>
+                <p>Dépensé : <strong>{{ total_spent | round(2) }} Dhs</strong></p>
+                <p>Restant : <strong>{{ remaining | round(2) }} Dhs</strong></p>
+                <p>Budget total : <strong>{{ user_income }} Dhs</strong></p>
             </div>
-            <p>Dépensé : <strong>{{ total_spent | round(2) }} Dhs</strong></p>
-            <p>Restant : <strong>{{ remaining | round(2) }} Dhs</strong></p>
-            <p>Budget total : <strong>{{ user_income }} Dhs</strong></p>
+
+            <!-- Goal -->
+            <div style="background: white; color: black; padding: 20px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 0 10px rgba(255,255,255,0.3);">
+                <h3>Goal</h3>
+                <!-- 🔁 Boucle sur tous les objectifs -->
+            {% if goals %}
+                {% for goal in goals %}
+                <div style="background: white; color: black; padding: 20px; border-radius: 15px; width: 300px; text-align: center; box-shadow: 0 0 10px rgba(255,255,255,0.3); margin-right: 20px;">
+                    <h3>{{ goal.goalNature.capitalize() }}</h3>
+                    <div style="position: relative; width: 150px; height: 150px; margin: 0 auto;">
+                        <svg width="150" height="150">
+                            <circle cx="75" cy="75" r="60" stroke="#eee" stroke-width="15" fill="none" />
+                            <circle cx="75" cy="75" r="60" stroke="green" stroke-width="15" fill="none"
+                                    stroke-dasharray="{{
+                                        ((total_spent / goal.outcome) * 100 if goal.outcome else 0) * 3.77
+                                    }}, 999"
+                                    transform="rotate(-90 75 75)" />
+                        </svg>
+                        <img src="/static/goals/{{ goal.goalNature | lower }}.png"
+                             alt="{{ goal.goalNature }}" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px;">
+                    </div>
+                    <p>{{ goal.outcome }} Dhs</p>
+                    <p>{{
+                        (total_spent / goal.outcome * 100) | round(1) if goal.outcome else 0
+                    }}% atteint</p>
+
+                    <form action="/delete-goal/{{ goal.goalId }}" method="post" style="margin-top: 10px;">
+                        <button type="submit"
+                                style="background: red; color: white; border: none; border-radius: 5px; padding: 5px 15px; cursor: pointer;">
+                            Supprimer
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>Aucun objectif défini</p>
+            {% endif %}
+
+
+                <!-- Bouton + -->
+                <form action="/add-goal" method="get">
+                    <button type="submit"
+                            style="margin-top: 10px; background: green; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 20px; cursor: pointer;">
+                        +
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
         const currentURL = window.location.pathname;
         document.querySelectorAll('a').forEach(link => {
-          if (link.getAttribute('href') === currentURL) {
-            link.classList.add('active');
-          }
+            if (link.getAttribute('href') === currentURL) {
+                link.classList.add('active');
+            }
         });
-      </script>
-    <script>
+
         function openModal() {
             document.getElementById('userModal').style.display = 'block';
         }
@@ -136,10 +186,5 @@
             }
         }
     </script>
-
 </body>
 </html>
-<!--<form action="/search" method="POST">
-        <input type="text" name="query" placeholder="Nom du produit" required>
-        <button type="submit">Rechercher</button>
-    </form>-->
